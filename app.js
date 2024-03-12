@@ -86,7 +86,7 @@ function login(email, password) {
   })
     .then((response) => {
       if (response.status == 401) {
-        throw new Error("Unauthorised");
+        throw new Error("Incorrect Username or Password");
       } else if (response.status == 422) {
         throw new Error("Password must be atleast 5 characters long");
       }
@@ -118,21 +118,26 @@ function getPredictions() {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
-      var table = document.getElementById("data-table");
-      data.forEach((item) => {
-        var row = table.insertRow(-1);
-        row.insertCell(0).innerHTML = item.name;
-        row.insertCell(1).innerHTML = item.email;
-        row.insertCell(2).innerHTML = item.disease;
-        var parameters = "";
-        for (var key in item.parameters) {
-          parameters += key + ": " + item.parameters[key] + "\n";
-        }
-        parameters = parameters.slice(0, -2);
-        row.insertCell(3).innerHTML = parameters;
-        row.insertCell(4).innerHTML = item.predictionResult;
-      });
+      if (data.length == 0) {
+        var info = document.getElementById("info");
+        info.textContent = "No Past Predictions found";
+      } else {
+        var table = document.getElementById("data-table");
+        table.style["display"] = "block";
+        data.forEach((item) => {
+          var row = table.insertRow(-1);
+          row.insertCell(0).innerHTML = item.name;
+          row.insertCell(1).innerHTML = item.email;
+          row.insertCell(2).innerHTML = item.disease;
+          var parameters = "";
+          for (var key in item.parameters) {
+            parameters += key + ": " + item.parameters[key] + "\n";
+          }
+          parameters = parameters.slice(0, -2);
+          row.insertCell(3).innerHTML = parameters;
+          row.insertCell(4).innerHTML = item.predictionResult;
+        });
+      }
     })
     .catch((error) => {
       console.error("Error:", error);

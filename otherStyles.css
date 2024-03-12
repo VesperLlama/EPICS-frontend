@@ -46,6 +46,7 @@ input[type="password"]:focus {
 table {
   width: 100%;
   border-collapse: collapse;
+  display: none;
 }
 
 th,
